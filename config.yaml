@@ -1,0 +1,82 @@
+# Federated Autoencoder-Based Clinical Decision Framework
+# Configuration file for synthetic and restricted-data reproducibility
+
+project:
+  name: "federated-autoencoder-clinical-framework"
+  output_dir: "outputs"
+
+execution:
+  seed: 42
+  device: "auto"
+  mode: "synthetic"
+
+data:
+  synthetic_samples: 8420
+  num_disease_classes: 6
+  test_size: 0.20
+  validation_size: 0.10
+
+  target_columns:
+    multiclass: "disease_label"
+    binary: "outcome_label"
+
+  restricted_data:
+    path: null
+
+preprocessing:
+  scaling: "standard"
+  apply_smote: true
+  smote_k_neighbors: 5
+
+federated:
+  num_clients: 5
+  federated_rounds: 15
+  local_epochs: 3
+  non_iid_alpha: 0.60
+  min_client_samples: 100
+  aggregation: "fedavg"
+
+model:
+  input_dim: null
+  latent_dim: 32
+
+  autoencoder:
+    hidden_dim_1: 128
+    hidden_dim_2: 64
+    dropout: 0.20
+
+  classifier:
+    hidden_dim: 64
+    dropout: 0.30
+
+training:
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  optimizer: "adam"
+
+loss:
+  focal_gamma: 2.0
+  focal_alpha: 0.25
+  reconstruction_weight: 0.40
+  multiclass_weight: 1.00
+  binary_weight: 0.80
+
+privacy:
+  enable_update_noise: true
+  dp_noise_std: 0.001
+
+outputs:
+  save_metrics: true
+  save_figures: true
+  save_round_history: true
+
+  files:
+    metrics_summary: "metrics_summary.json"
+    multiclass_metrics: "multiclass_metrics.csv"
+    binary_metrics: "binary_metrics.csv"
+    round_history: "federated_round_history.csv"
+    multiclass_confusion_matrix: "multiclass_confusion_matrix.png"
+    binary_confusion_matrix: "binary_confusion_matrix.png"
+    binary_roc_curve: "binary_roc_curve.png"
+    training_curve: "training_curve.png"
